@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>McDonald's VIP Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f12;
+            color: #ffffff;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Page Containers */
+        .page, .auth-container {
+            display: none;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        .active-page { display: block !important; }
+        .active-auth { display: flex !important; }
+
+        /* Auth Pages */
+        .auth-container {
+            padding: 40px 20px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #121214 0%, #1a1a24 100%);
+            min-height: 100vh;
+        }
+
+        .auth-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .auth-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #FFC72C;
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            width: 100%;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .phone-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .country-code {
+            background-color: #23232e;
+            border: 1px solid #333344;
+            border-radius: 10px;
+            color: #a3a3a3;
+            padding: 15px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            background-color: #23232e;
+            border: 1px solid #333344;
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #FFC72C;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #DA291C 0%, #FFC72C 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(218, 41, 28, 0.3);
+        }
+
+        .switch-auth {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #b3b3b3;
+            cursor: pointer;
+        }
+
+        .switch-auth span {
+            color: #FFC72C;
+            font-weight: bold;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #161622;
+            border-bottom: 1px solid #232334;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mcd-logo {
+            width: 32px;
+            height: 32px;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFC72C;
+        }
+
+        /* Balance Card */
+        .home-balance-card {
+            background: linear-gradient(135deg, #1e1b4b 0%, #161622 100%);
+            margin: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #232334;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deposit-btn, .withdraw-btn {
+            background: linear-gradient(90deg, #00A4E4 0%, #0088cc 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .withdraw-btn {
+            background: linear-gradient(90deg, #e67e22 0%, #d35400 100%);
+        }
+
+        .balance-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .banner {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600') no-repeat center center/cover;
+            border-radius: 0 0 15px 15px;
+        }
+
+        /* Action Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 20px 15px;
+        }
+
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #9aa8bd;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background-color: #1a1a26;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            font-size: 20px;
+            border: 1px solid #28283d;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            background-color: #13131a;
+            border-bottom: 1px solid #1f1f2e;
+        }
+
+        .tab-item {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #8997ad;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tab-item.active-tab {
+            color: #FFC72C;
+            border-bottom: 2px solid #FFC72C;
+        }
+
+        .product-list {
+            padding: 15px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active-content {
+            display: block;
+        }
+
+        /* Product Card */
+        .product-card {
+            background-color: #161622;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid #232334;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 160px;
+        }
+
+        .product-details {
+            padding: 15px;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .buy-btn {
+            background: linear-gradient(90deg, #1f2d42 0%, #152030 100%);
+            color: #FFC72C;
+            border: 1px solid #FFC72C;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #929db0;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* Profile Page */
+        .profile-container {
+            background: linear-gradient(180deg, #0e2954 0%, #0f0f12 40%);
+            min-height: 100vh;
+        }
+
+        .profile-header-new {
+            padding: 30px 20px 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar-new {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-info-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .user-id-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .vip-progress-card {
+            background-color: rgba(255, 255, 255, 0.06);
+            margin: 0 15px 20px 15px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .vip-progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .vip-progress-bar-fill {
+            width: 0%; 
+            height: 100%;
+            background: linear-gradient(90deg, #FFC72C, #DA291C);
+            transition: width 0.5s ease;
+        }
+
+        .stats-display-card {
+            background-color: rgba(255, 255, 255, 0.08);
+            margin: 0 15px 20px 15px;
+            border-radius: 16px;
+            padding: 20px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-grid-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            text-align: center;
+        }
+
+        .stats-grid-row:first-child {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
+
+        .stat-box-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stat-value-num {
+            font-size: 14px;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+
+        .stat-label-text {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .profile-menu-container {
+            background-color: #161622;
+            margin: 0 15px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #232334;
+            margin-bottom: 20px;
+        }
+
+        .profile-menu-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #1f1f30;
+            cursor: pointer;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .profile-menu-row:last-child {
+            border-bottom: none;
+        }
+
+        .menu-left-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Deposit Page */
+        .deposit-header, .withdraw-header, .sub-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #161622;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #FFC72C;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .section-card {
+            background-color: #161622;
+            margin: 15px;
+            border-radius: 16px;
+            border: 1px solid #232334;
+            overflow: hidden;
+        }
+
+        .section-title {
+            padding: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFC72C;
+            border-bottom: 1px solid #232334;
+            background-color: #13131a;
+        }
+
+        .section-content {
+            padding: 15px;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 15px;
+            background-color: #23232e;
+            border: 1px solid #333344;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+        }
+
+        .limit-text {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .quick-amounts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quick-btn {
+            background-color: #23232e;
+            border: 1px solid #333344;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover, .quick-btn:active {
+            background-color: #FFC72C;
+            color: #000;
+        }
+
+        .account-box {
+            background-color: #0a0a10;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #232334;
+        }
+
+        .account-row:last-child {
+            border-bottom: none;
+        }
+
+        .account-label {
+            font-size: 13px;
+            color: #a0aec0;
+        }
+
+        .account-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFC72C;
+        }
+
+        .copy-btn {
+            background-color: #23232e;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #FFC72C;
+            cursor: pointer;
+        }
+
+        .screenshot-upload {
+            width: 100%;
+            padding: 20px;
+            background-color: #0a0a10;
+            border: 2px dashed #333344;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .screenshot-upload:hover {
+            border-color: #FFC72C;
+        }
+
+        .screenshot-preview {
+            margin-top: 10px;
+            max-width: 100%;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .warning-text {
+            text-align: center;
+            font-size: 11px;
+            color: #DA291C;
+            margin: 10px 15px;
+            padding: 8px;
+            background-color: rgba(218, 41, 28, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background-color: #161622;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #232334;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: #718096;
+            cursor: pointer;
+        }
+
+        .nav-item.active-nav {
+            color: #FFC72C;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1a1a2e;
+            border-left: 4px solid #FFC72C;
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: none;
+            z-index: 200;
+            max-width: 90%;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== AUTH PAGES ==================== -->
+    <div id="page-register" class="auth-container active-auth">
+        <img class="auth-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/36/McDonald%27s_Golden_Arches.svg" alt="Mcd Logo">
+        <div class="auth-title">McDonald's VIP</div>
+        
+        <div class="input-group">
+            <div class="phone-input-wrapper">
+                <div class="country-code">+251</div>
+                <input type="tel" id="reg-phone" placeholder="Enter your phone number">
+            </div>
+        </div>
+        <div class="input-group">
+            <input type="text" id="reg-nickname" placeholder="Enter your nickname">
+        </div>
+        <div class="input-group">
+            <input type="text" id="reg-fullname" placeholder="Enter your full name">
+        </div>
+        <div class="input-group">
+            <input type="email" id="reg-email" placeholder="Enter your email">
+        </div>
+        <div class="input-group">
+            <input type="password" id="reg-password" placeholder="Enter your password">
+        </div>
+        <div class="input-group">
+            <input type="password" id="reg-confirm-password" placeholder="Confirm your password">
+        </div>
+        
+        <button class="auth-btn" onclick="processRegister()">Register Now</button>
+        <div class="switch-auth" onclick="switchAuthPage('page-login')">Already have an account? <span>Login Now</span></div>
+    </div>
+
+    <div id="page-login" class="auth-container">
+        <img class="auth-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/36/McDonald%27s_Golden_Arches.svg" alt="Mcd Logo">
+        <div class="auth-title">McDonald's VIP Login</div>
+        
+        <div class="input-group">
+            <input type="tel" id="login-phone" placeholder="Enter your phone number">
+        </div>
+        <div class="input-group">
+            <input type="password" id="login-password" placeholder="Enter your password">
+        </div>
+        
+        <button class="auth-btn" onclick="processLogin()">Login Now</button>
+        <div class="switch-auth" onclick="switchAuthPage('page-register')">Don't have an account? <span>Register Now</span></div>
+    </div>
+
+    <!-- ==================== HOME PAGE ==================== -->
+    <div id="page-home" class="page">
+        <div class="header">
+            <div class="logo-section">
+                <img class="mcd-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/36/McDonald%27s_Golden_Arches.svg" alt="Mcd">
+                <span class="brand-name">McDonald's VIP</span>
+            </div>
+            <div style="font-size: 18px; color: #FFC72C;">🔔</div>
+        </div>
+
+        <div class="home-balance-card">
+            <div>
+                <div style="font-size: 13px; color: #a0aec0;">My Balance</div>
+                <div style="font-size: 22px; font-weight: bold; color: #FFC72C; margin-top: 4px;">ETB <span id="home-balance-display">0.00</span></div>
+            </div>
+            <div class="balance-buttons">
+                <button class="deposit-btn" onclick="showDepositPage()">➕ Deposit</button>
+                <button class="withdraw-btn" onclick="alert('Withdrawal feature coming soon!')">📤 Withdraw</button>
+            </div>
+        </div>
+
+        <div class="banner"></div>
+
+        <div class="actions-grid">
+            <div class="action-item" onclick="showDepositPage()">
+                <div class="action-icon" style="color: #eab308;">💰</div>Deposit
+            </div>
+            <div class="action-item" onclick="alert('Withdrawal feature coming soon!')">
+                <div class="action-icon" style="color: #e67e22;">📤</div>Withdraw
+            </div>
+            <a href="https://t.me/Be_Like12" target="_blank" class="action-item">
+                <div class="action-icon" style="color: #3b82f6;">🎧</div>Support
+            </a>
+            <div class="action-item" onclick="changeTab('profile')">
+                <div class="action-icon" style="color: #10b981;">👤</div>My Account
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div id="tab-btn-stable" class="tab-item active-tab" onclick="switchTab('stable')">Stable</div>
+            <div id="tab-btn-vip" class="tab-item" onclick="switchTab('vip')">VIP</div>
+            <div id="tab-btn-activity" class="tab-item" onclick="switchTab('activity')">Activity</div>
+        </div>
+
+        <div class="product-list">
+            <div id="tab-content-stable" class="tab-content active-content">
+                <div class="product-card">
+                    <div class="product-img" style="background: url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=500') center/cover;"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <div class="product-title">McDonald's Share 1 🍔</div>
+                            <button class="buy-btn" onclick="processProductPurchase(500, 150, 50, 'McDonald\'s Share 1 🍔', true)">Buy</button>
+                        </div>
+                        <div class="info-row"><span>Price</span><span class="info-value">ETB 500.00</span></div>
+                        <div class="info-row"><span>Days</span><span class="info-value">50</span></div>
+                        <div class="info-row"><span>Daily income</span><span class="info-value">ETB 150.00</span></div>
+                        <div class="info-row"><span>Total income</span><span class="info-value">ETB 7,500.00</span></div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img" style="background: url('https://images.unsplash.com/photo-1571066811602-71683a3f680d?q=80&w=500') center/cover;"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <div class="product-title">McDonald's Share 2 🍕</div>
+                            <button class="buy-btn" onclick="processProductPurchase(1500, 465, 50, 'McDonald\'s Share 2 🍕', false)">Buy</button>
+                        </div>
+                        <div class="info-row"><span>Price</span><span class="info-value">ETB 1,500.00</span></div>
+                        <div class="info-row"><span>Days</span><span class="info-value">50</span></div>
+                        <div class="info-row"><span>Daily income</span><span class="info-value">ETB 465.00</span></div>
+                        <div class="info-row"><span>Total income</span><span class="info-value">ETB 23,250.00</span></div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img" style="background: url('https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=500') center/cover;"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <div class="product-title">McDonald's Premium 1 🍖</div>
+                            <button class="buy-btn" onclick="processProductPurchase(1500, 170, 20, 'McDonald\'s Premium 1 🍖', false)">Buy</button>
+                        </div>
+                        <div class="info-row"><span>Price</span><span class="info-value">ETB 1500.00</span></div>
+                        <div class="info-row"><span>Days</span><span class="info-value">20</span></div>
+                        <div class="info-row"><span>Daily income</span><span class="info-value">ETB 170.00</span></div>
+                        <div class="info-row"><span>Total income</span><span class="info-value">ETB 3400.00</span></div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img" style="background: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=500') center/cover;"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <div class="product-title">McDonald's Premium 2 🍕</div>
+                            <button class="buy-btn" onclick="processProductPurchase(3000, 350, 20, 'McDonald\'s Premium 2 🍕', false)">Buy</button>
+                        </div>
+                        <div class="info-row"><span>Price</span><span class="info-value">ETB 3000.00</span></div>
+                        <div class="info-row"><span>Days</span><span class="info-value">20</span></div>
+                        <div class="info-row"><span>Daily income</span><span class="info-value">ETB 350.00</span></div>
+                        <div class="info-row"><span>Total income</span><span class="info-value">ETB 7000.00</span></div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img" style="background: url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=500') center/cover;"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <div class="product-title">McDonald's Premium 3 🥩</div>
+                            <button class="buy-btn" onclick="processProductPurchase(6000, 730, 20, 'McDonald\'s Premium 3 🥩', false)">Buy</button>
+                        </div>
+                        <div class="info-row"><span>Price</span><span class="info-value">ETB 6000.00</span></div>
+                        <div class="info-row"><span>Days</span><span class="info-value">20</span></div>
+                        <div class="info-row"><span>Daily income</span><span class="info-value">ETB 730.00</span></div>
+                        <div class="info-row"><span>Total income</span><span class="info-value">ETB 14600.00</span></div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img" style="background: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=500') center/cover;"></div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <div class="product-title">McDonald's Elite Share 💎</div>
+                            <button class="buy-btn" onclick="processProductPurchase(12000, 1400, 17, 'McDonald\'s Elite Share 💎', false)">Buy</button>
+                        </div>
+                        <div class="info-row"><span>Price</span><span class="info-value">ETB 12000.00</span></div>
+                        <div class="info-row"><span>Days</span><span class="info-value">17</span></div>
+                        <div class="info-row"><span>Daily income</span><span class="info-value">ETB 1400.00</span></div>
+                        <div class="info-row"><span>Total income</span><span class="info-value">ETB 23800.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-content-vip" class="tab-content">
+                <div class="product-card">
+                    <div class="product-img" style="background: linear-gradient(135deg, #DA291C, #FFC72C); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: white;">VIP 1 🔥</div>
+                    <div class="product-details">
+                        <div class="product-header">
+                            <div class="product-title">VIP Fast Growth 1</div>
+                            <button class="buy-btn" onclick="processVipPurchase(400, 250, 3, 'VIP Fast Growth 1')">Buy</button>
+                        </div>
+                        <div class="info-row"><span>Price</span><span class="info-value">ETB 400.00</span></div>
+                        <div class="info-row"><span>Days</span><span class="info-value">3</span></div>
+                        <div class="info-row"><span>Total income</span><span class="info-value">ETB 750.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-content-activity" class="tab-content">
+                <div style="text-align: center; color: #a0aec0; padding: 40px 0; font-size: 14px;">🎉 No active events right now.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PROFILE PAGE ==================== -->
+    <div id="page-profile" class="page profile-container">
+        <div class="profile-header-new">
+            <div class="avatar-new">👤</div>
+            <div class="user-info-text">
+                <span id="profile-name" style="font-size: 16px; font-weight: bold;">User</span>
+                <span id="profile-phone" class="user-id-text">Phone: ---</span>
+            </div>
+        </div>
+
+        <div class="vip-progress-card">
+            <div style="font-size: 13px; margin-bottom: 5px;" id="profile-vip-text">VIP Level: 0 (Locked)</div>
+            <div class="vip-progress-bar-bg"><div class="vip-progress-bar-fill" id="profile-vip-progress"></div></div>
+        </div>
+
+        <div class="stats-display-card">
+            <div class="stats-grid-row">
+                <div class="stat-box-item"><span class="stat-value-num" id="stat-balance-profile">ETB 0.00</span><span class="stat-label-text">Current Balance</span></div>
+                <div class="stat-box-item"><span class="stat-value-num" id="stat-total-invested">ETB 0.00</span><span class="stat-label-text">Total Invested</span></div>
+                <div class="stat-box-item"><span class="stat-value-num" id="stat-total-earned">ETB 0.00</span><span class="stat-label-text">Total Earned</span></div>
+            </div>
+            <div class="stats-grid-row" style="margin-top: 15px;">
+                <div class="stat-box-item"><span class="stat-value-num" id="stat-total-orders">0</span><span class="stat-label-text">My Orders</span></div>
+                <div class="stat-box-item"><span class="stat-value-num" id="stat-expected-income">ETB 0.00</span><span class="stat-label-text">Expected Income</span></div>
+                <div class="stat-box-item"><span class="stat-value-num" style="color:#10b981;">Active</span><span class="stat-label-text">Status</span></div>
+            </div>
+        </div>
+
+        <div class="profile-menu-container">
+            <div class="profile-menu-row" onclick="showAccountDetails()">
+                <div class="menu-left-content">👤 <span>Account Details</span></div><span>❯</span>
+            </div>
+            <div class="profile-menu-row" onclick="showAboutUs()">
+                <div class="menu-left-content">ℹ️ <span>About Us</span></div><span>❯</span>
+            </div>
+            <div class="profile-menu-row" onclick="showPlatformRules()">
+                <div class="menu-left-content">📋 <span>Platform Rules</span></div><span>❯</span>
+            </div>
+            <div class="profile-menu-row" onclick="showCustomerService()">
+                <div class="menu-left-content">🎧 <span>Customer Service</span></div><span>❯</span>
+            </div>
+            <div class="profile-menu-row" onclick="logout()">
+                <div class="menu-left-content" style="color: #DA291C;">🚪 <span>Secure Exit</span></div><span>❯</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DEPOSIT PAGE ==================== -->
+    <div id="page-deposit" class="page">
+        <div class="deposit-header">
+            <span class="back-btn" onclick="hideDepositPage()">←</span>
+            <span class="page-title">Deposit via Telebirr/CBE</span>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">💰 Step 1: Enter Amount</div>
+            <div class="section-content">
+                <input type="number" id="amountInput" class="amount-input" placeholder="Enter amount in ETB" value="500">
+                <div class="limit-text">⚠️ Minimum: 500 ETB | Maximum: 10,000 ETB</div>
+                <div class="quick-amounts">
+                    <button class="quick-btn" onclick="setAmount(500)">500 ETB</button>
+                    <button class="quick-btn" onclick="setAmount(1000)">1,000 ETB</button>
+                    <button class="quick-btn" onclick="setAmount(2000)">2,000 ETB</button>
+                    <button class="quick-btn" onclick="setAmount(5000)">5,000 ETB</button>
+                    <button class="quick-btn" onclick="setAmount(10000)">10,000 ETB</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">🏦 Step 2: Send Payment To</div>
+            <div class="section-content">
+                <div class="account-box">
+                    <div class="account-row">
+                        <span class="account-label">Account Name</span>
+                        <span class="account-value">shanbel</span>
+                        <button class="copy-btn" onclick="copyText('shanbel')">Copy</button>
+                    </div>
+                    <div class="account-row">
+                        <span class="account-label">Account Number</span>
+                        <span class="account-value">0975751260</span>
+                        <button class="copy-btn" onclick="copyText('0975751260')">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">📝 Step 3: Transaction Code</div>
+            <div class="section-content">
+                <input type="text" id="transactionCode" class="amount-input" placeholder="FT123456789012 or CBE reference number" style="font-size: 14px;">
+                <div class="limit-text">💡 For Telebirr: Enter FT code (e.g., FT123456789012)<br>💡 For CBE: Enter reference number from SMS</div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">📸 Step 4: Screenshot (Optional)</div>
+            <div class="section-content">
+                <div class="screenshot-upload" onclick="document.getElementById('screenshotInput').click()">
+                    <span>📷 Click to upload screenshot</span>
+                    <input type="file" id="screenshotInput" accept="image/*" style="display:none" onchange="previewScreenshot(this)">
+                </div>
+                <img id="screenshotPreview" class="screenshot-preview" alt="Preview">
+            </div>
+        </div>
+
+        <button class="auth-btn" id="depositBtn" style="width: calc(100% - 30px); margin: 15px;" onclick="processVerifiedDeposit()">✅ Verify & Deposit</button>
+        <div class="warning-text">⚠️ Make sure you have sent the exact amount to the account above before verifying!</div>
+    </div>
+
+    <!-- ==================== ACCOUNT DETAILS PAGE ==================== -->
+    <div id="page-account-details" class="page">
+        <div class="deposit-header">
+            <span class="back-btn" onclick="goBackToProfile()">←</span>
+            <span class="page-title">Account Details</span>
+        </div>
+        <div class="section-card">
+            <div class="section-content">
+                <div class="account-box">
+                    <div class="account-row"><span class="account-label">Full Name</span><span class="account-value" id="detail-fullname">-</span></div>
+                    <div class="account-row"><span class="account-label">Nickname</span><span class="account-value" id="detail-nickname">-</span></div>
+                    <div class="account-row"><span class="account-label">Phone Number</span><span class="account-value" id="detail-phone">-</span></div>
+                    <div class="account-row"><span class="account-label">Email</span><span class="account-value" id="detail-email">-</span></div>
+                    <div class="account-row"><span class="account-label">Member Since</span><span class="account-value" id="detail-joindate">-</span></div>
+                    <div class="account-row"><span class="account-label">VIP Level</span><span class="account-value" id="detail-vip">0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ABOUT US PAGE ==================== -->
+    <div id="page-about" class="page">
+        <div class="deposit-header">
+            <span class="back-btn" onclick="goBackToProfile()">←</span>
+            <span class="page-title">About Us</span>
+        </div>
+        <div class="section-card">
+            <div class="section-content">
+                <div style="text-align:center;padding:20px;">
+                    <img class="auth-logo" src="https://upload.wikimedia.org/wikipedia/commons/3/36/McDonald%27s_Golden_Arches.svg" style="width:60px;">
+                    <h3 style="color:#FFC72C;margin:15px 0;">McDonald's VIP Platform</h3>
+                    <p style="color:#a0aec0;line-height:1.6;">Welcome to McDonald's VIP investment platform. We provide secure and profitable investment opportunities through our unique share system.</p>
+                    <p style="color:#a0aec0;margin-top:15px;">Version 2.0 | © 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PLATFORM RULES PAGE ==================== -->
+    <div id="page-rules" class="page">
+        <div class="deposit-header">
+            <span class="back-btn" onclick="goBackToProfile()">←</span>
+            <span class="page-title">Platform Rules</span>
+        </div>
+        <div class="section-card">
+            <div class="section-content">
+                <div style="padding:10px;">
+                    <h4 style="color:#FFC72C;">📌 General Rules</h4>
+                    <p style="color:#a0aec0;margin:10px 0;">1. Minimum deposit: 500 ETB<br>2. Maximum deposit: 10,000 ETB<br>3. Minimum withdrawal: 500 ETB<br>4. Maximum withdrawal: 20,000 ETB</p>
+                    <h4 style="color:#FFC72C;margin-top:15px;">🔒 Security</h4>
+                    <p style="color:#a0aec0;">Always keep your password secure. Never share your account details.</p>
+                    <h4 style="color:#FFC72C;margin-top:15px;">⏰ Processing Time</h4>
+                    <p style="color:#a0aec0;">Deposits: Instant after verification<br>Withdrawals: 24 hours</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CUSTOMER SERVICE PAGE ==================== -->
+    <div id="page-customer" class="page">
+        <div class="deposit-header">
+            <span class="back-btn" onclick="goBackToProfile()">←</span>
+            <span class="page-title">Customer Service</span>
+        </div>
+        <div class="section-card">
+            <div class="section-content">
+                <div style="text-align:center;padding:20px;">
+                    <div class="action-icon" style="margin:0 auto 15px;width:60px;height:60px;font-size:30px;">🎧</div>
+                    <h4 style="color:#FFC72C;">24/7 Support</h4>
+                    <p style="color:#a0aec0;margin:15px 0;">Telegram: @McDonaldsVIP_Support</p>
+                    <p style="color:#a0aec0;">Phone: +251 123 456 789</p>
+                    <p style="color:#a0aec0;">Email: support@mcdvip.com</p>
+                    <button class="auth-btn" style="margin-top:20px;" onclick="window.open('https://t.me/Be_Like12', '_blank')">Contact Support</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== BOTTOM NAVIGATION ==================== -->
+    <div id="global-nav" class="bottom-nav" style="display: none;">
+        <div id="nav-home" class="nav-item active-nav" onclick="changeTab('home')"><div class="nav-icon">🏠</div>Home</div>
+        <div id="nav-profile" class="nav-item" onclick="changeTab('profile')"><div class="nav-icon">👤</div>My</div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ==================== CONFIGURATION ====================
+        // 🔴 IMPORTANT: Get your API key from https://verifyapi.leulzenebe.pro
+        // 🔴 Replace this with your actual API key!
+        const VERIFIER_API_KEY = "YOUR_API_KEY_HERE";  // <-- PUT YOUR API KEY HERE!
+        const VERIFIER_API_URL = "https://verifyapi.leulzenebe.pro";
+        
+        // ==================== USER DATA ====================
+        let users = JSON.parse(localStorage.getItem('mcd_users') || '[]');
+        let currentUser = null;
+        let paymentRecords = JSON.parse(localStorage.getItem('mcd_payments') || '[]');
+        
+        let currentUserBalance = 0.00;
+        let totalInvestedAmount = 0.00;
+        let totalEarnedAmount = 0.00;
+        let totalOrdersCount = 0;
+        let totalExpectedIncome = 0.00;
+        let currentUserVipLevel = 0;
+        
+        // ==================== HELPER FUNCTIONS ====================
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            toast.style.borderLeftColor = isError ? '#DA291C' : '#10b981';
+            toast.innerText = message;
+            setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+        
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            showToast(`✅ Copied: ${text}`);
+        }
+        
+        function setAmount(amount) {
+            document.getElementById('amountInput').value = amount;
+        }
+        
+        function previewScreenshot(input) {
+            const preview = document.getElementById('screenshotPreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function updateAllBalanceDisplays() {
+            document.getElementById('home-balance-display').innerText = currentUserBalance.toFixed(2);
+            document.getElementById('stat-balance-profile').innerText = "ETB " + currentUserBalance.toFixed(2);
+            document.getElementById('stat-total-invested').innerText = "ETB " + totalInvestedAmount.toFixed(2);
+            document.getElementById('stat-total-earned').innerText = "ETB " + totalEarnedAmount.toFixed(2);
+            document.getElementById('stat-total-orders').innerText = totalOrdersCount;
+            document.getElementById('stat-expected-income').innerText = "ETB " + totalExpectedIncome.toFixed(2);
+            
+            if (currentUserVipLevel >= 1) {
+                document.getElementById('profile-vip-text').innerHTML = "VIP Level: 1 (Unlocked) 🎉";
+                document.getElementById('profile-vip-progress').style.width = "100%";
+            } else {
+                document.getElementById('profile-vip-text').innerHTML = "VIP Level: 0 (Locked - Buy 500 ETB Product)";
+                document.getElementById('profile-vip-progress').style.width = "0%";
+            }
+        }
+        
+        // ==================== AUTH FUNCTIONS ====================
+        function switchAuthPage(pageId) {
+            document.getElementById('page-register').classList.remove('active-auth');
+            document.getElementById('page-login').classList.remove('active-auth');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('global-nav').style.display = 'none';
+            document.getElementById(pageId).classList.add('active-auth');
+        }
+        
+        function switchMainPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('page-register').classList.remove('active-auth');
+            document.getElementById('page-login').classList.remove('active-auth');
+            document.getElementById(pageId).classList.add('active-page');
+        }
+        
+        function goBackToProfile() { 
+            switchMainPage('page-profile'); 
+            document.getElementById('global-nav').style.display = 'flex';
+            updateAllBalanceDisplays();
+        }
+        
+        function processRegister() {
+            const phone = document.getElementById('reg-phone').value.trim();
+            const nickname = document.getElementById('reg-nickname').value.trim();
+            const fullname = document.getElementById('reg-fullname').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            
+            if (!phone || !nickname || !fullname || !email || !password) { 
+                showToast("Please fill in all fields!", true); 
+                return; 
+            }
+            if (password !== confirmPassword) { 
+                showToast("Passwords do not match!", true); 
+                return; 
+            }
+            if (users.find(u => u.phone === phone)) { 
+                showToast("Phone number already registered!", true); 
+                return; 
+            }
+            
+            users.push({ phone, nickname, fullname, email, password, joinDate: new Date().toISOString() });
+            localStorage.setItem('mcd_users', JSON.stringify(users));
+            showToast("Registration Successful! Please login.");
+            switchAuthPage('page-login');
+            document.getElementById('login-phone').value = phone;
+        }
+        
+        function processLogin() {
+            const phone = document.getElementById('login-phone').value.trim();
+            const password = document.getElementById('login-password').value;
+            if (!phone || !password) { 
+                showToast("Please fill in all fields!", true); 
+                return; 
+            }
+            const user = users.find(u => u.phone === phone && u.password === password);
+            if (user) {
+                currentUser = user;
+                document.getElementById('profile-name').innerText = user.nickname;
+                document.getElementById('profile-phone').innerText = "Phone: " + phone;
+                
+                const savedData = localStorage.getItem(`mcd_data_${phone}`);
+                if (savedData) { 
+                    const data = JSON.parse(savedData); 
+                    currentUserBalance = data.balance || 0; 
+                    totalInvestedAmount = data.invested || 0; 
+                    totalEarnedAmount = data.earned || 0; 
+                    totalOrdersCount = data.orders || 0; 
+                    totalExpectedIncome = data.expected || 0; 
+                    currentUserVipLevel = data.vipLevel || 0; 
+                } else { 
+                    currentUserBalance = 1000; // Starting bonus for new users
+                    totalInvestedAmount = 0; 
+                    totalEarnedAmount = 0; 
+                    totalOrdersCount = 0; 
+                    totalExpectedIncome = 0; 
+                    currentUserVipLevel = 0; 
+                }
+                
+                updateAllBalanceDisplays();
+                switchMainPage('page-home');
+                document.getElementById('global-nav').style.display = 'flex';
+                document.getElementById('nav-home').classList.add('active-nav');
+            } else { 
+                showToast("Incorrect Phone or Password!", true); 
+            }
+        }
+        
+        function logout() {
+            if (currentUser) { 
+                localStorage.setItem(`mcd_data_${currentUser.phone}`, JSON.stringify({ 
+                    balance: currentUserBalance, 
+                    invested: totalInvestedAmount, 
+                    earned: totalEarnedAmount, 
+                    orders: totalOrdersCount, 
+                    expected: totalExpectedIncome, 
+                    vipLevel: currentUserVipLevel 
+                })); 
+            }
+            currentUser = null;
+            switchAuthPage('page-login');
+        }
+        
+        // ==================== PRODUCT FUNCTIONS ====================
+        function processProductPurchase(price, dailyIncome, days, productName, unlocksVip) {
+            if (!currentUser) { showToast("Please login first!", true); return; }
+            if (currentUserBalance >= price) {
+                currentUserBalance -= price; 
+                totalOrdersCount += 1; 
+                let calculatedIncome = dailyIncome * days;
+                totalExpectedIncome += calculatedIncome; 
+                totalInvestedAmount += price;
+                if (unlocksVip) { 
+                    currentUserVipLevel = 1; 
+                    showToast(`✅ Purchased ${productName}! VIP Level 1 Unlocked! 🎉`); 
+                } else { 
+                    showToast(`✅ Purchased ${productName}! Investment confirmed!`); 
+                }
+                updateAllBalanceDisplays();
+                localStorage.setItem(`mcd_data_${currentUser.phone}`, JSON.stringify({ 
+                    balance: currentUserBalance, invested: totalInvestedAmount, 
+                    earned: totalEarnedAmount, orders: totalOrdersCount, 
+                    expected: totalExpectedIncome, vipLevel: currentUserVipLevel 
+                }));
+            } else { 
+                showToast(`❌ Insufficient balance! Need ETB ${price}`, true); 
+            }
+        }
+        
+        function processVipPurchase(price, dailyIncome, days, productName) {
+            if (!currentUser) { showToast("Please login first!", true); return; }
+            if (currentUserVipLevel < 1) { 
+                showToast("❌ Buy 500 ETB product first to unlock VIP!", true); 
+                return; 
+            }
+            if (currentUserBalance >= price) {
+                currentUserBalance -= price; 
+                totalOrdersCount += 1; 
+                let calculatedIncome = dailyIncome * days;
+                totalExpectedIncome += calculatedIncome; 
+                totalInvestedAmount += price;
+                updateAllBalanceDisplays(); 
+                showToast(`✅ Purchased VIP: ${productName}!`);
+                localStorage.setItem(`mcd_data_${currentUser.phone}`, JSON.stringify({ 
+                    balance: currentUserBalance, invested: totalInvestedAmount, 
+                    earned: totalEarnedAmount, orders: totalOrdersCount, 
+                    expected: totalExpectedIncome, vipLevel: currentUserVipLevel 
+                }));
+            } else { 
+                showToast(`❌ Insufficient balance! Need ETB ${price}`, true); 
+            }
+        }
+        
+        // ==================== TAB FUNCTIONS ====================
+        function switchTab(tabName) {
+            document.getElementById('tab-btn-stable').classList.remove('active-tab');
+            document.getElementById('tab-btn-vip').classList.remove('active-tab');
+            document.getElementById('tab-btn-activity').classList.remove('active-tab');
+            document.getElementById('tab-content-stable').classList.remove('active-content');
+            document.getElementById('tab-content-vip').classList.remove('active-content');
+            document.getElementById('tab-content-activity').classList.remove('active-content');
+            document.getElementById('tab-btn-' + tabName).classList.add('active-tab');
+            document.getElementById('tab-content-' + tabName).classList.add('active-content');
+        }
+        
+        function changeTab(tabName) {
+            document.getElementById('nav-home').classList.remove('active-nav');
+            document.getElementById('nav-profile').classList.remove('active-nav');
+            if(tabName === 'home') { 
+                switchMainPage('page-home'); 
+                document.getElementById('nav-home').classList.add('active-nav'); 
+            } else if(tabName === 'profile') { 
+                switchMainPage('page-profile'); 
+                document.getElementById('nav-profile').classList.add('active-nav');
+                updateAllBalanceDisplays();
+            }
+        }
+        
+        // ==================== DEPOSIT FUNCTIONS ====================
+        function showDepositPage() { 
+            if (!currentUser) { showToast("Please login first!", true); return; }
+            switchMainPage('page-deposit'); 
+            document.getElementById('global-nav').style.display = 'none';
+        }
+        
+        function hideDepositPage() { 
+            switchMainPage('page-home'); 
+            document.getElementById('global-nav').style.display = 'flex';
+        }
+        
+        function showAccountDetails() {
+            if (currentUser) {
+                document.getElementById('detail-fullname').innerText = currentUser.fullname || '-';
+                document.getElementById('detail-nickname').innerText = currentUser.nickname || '-';
+                document.getElementById('detail-phone').innerText = currentUser.phone || '-';
+                document.getElementById('detail-email').innerText = currentUser.email || '-';
+                document.getElementById('detail-joindate').innerText = currentUser.joinDate ? new Date(currentUser.joinDate).toLocaleDateString() : '-';
+                document.getElementById('detail-vip').innerText = currentUserVipLevel;
+            }
+            switchMainPage('page-account-details');
+            document.getElementById('global-nav').style.display = 'none';
+        }
+        
+        function showAboutUs() { switchMainPage('page-about'); document.getElementById('global-nav').style.display = 'none'; }
+        function showPlatformRules() { switchMainPage('page-rules'); document.getElementById('global-nav').style.display = 'none'; }
+        function showCustomerService() { switchMainPage('page-customer'); document.getElementById('global-nav').style.display = 'none'; }
+        
+        // ==================== VERIFIER API PAYMENT VERIFICATION ====================
+        async function verifyPayment(transactionCode) {
+            if (!transactionCode) {
+                return { success: false, message: "No transaction code provided" };
+            }
+            
+            // Determine endpoint based on transaction code format
+            let endpoint = '/verify';
+            let bodyData = { reference: transactionCode };
+            
+            if (transactionCode.toUpperCase().startsWith('FT')) {
+                endpoint = '/verify-telebirr';
+                bodyData = { reference: transactionCode };
+            }
+            else if (transactionCode.match(/^\d{10,}$/)) {
+                endpoint = '/verify-cbebirr';
+                bodyData = { reference: transactionCode };
+            }
+            else if (transactionCode.toUpperCase().startsWith('CBE') || transactionCode.match(/^\d{8,}$/)) {
+                endpoint = '/verify-cbe';
+                bodyData = { reference: transactionCode };
+            }
+            
+            console.log(`Verifying using endpoint: ${endpoint} with code: ${transactionCode}`);
+            
+            try {
+                const response = await fetch(`${VERIFIER_API_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': VERIFIER_API_KEY
+                    },
+                    body: JSON.stringify(bodyData)
+                });
+                
+                const data = await response.json();
+                console.log("Verification response:", data);
+                
+                if (data.status === 'success' || data.verified === true || data.success === true) {
+                    return { 
+                        success: true, 
+                        amount: data.amount || data.amount_paid || null,
+                        sender: data.sender || data.from || null,
+                        message: "Payment verified successfully!"
+                    };
+                } else {
+                    return { 
+                        success: false, 
+                        message: data.message || data.error || "Payment not found or invalid" 
+                    };
+                }
+            } catch (error) {
+                console.error("Verification error:", error);
+                return { 
+                    success: false, 
+                    message: "Error connecting to verification service. Please try again." 
+                };
+            }
+        }
+        
+        async function processVerifiedDeposit() {
+            const amount = parseFloat(document.getElementById('amountInput').value);
+            const transactionCode = document.getElementById('transactionCode').value.trim();
+            const screenshot = document.getElementById('screenshotPreview').src;
+            const depositBtn = document.getElementById('depositBtn');
+            
+            // Validate amount
+            if (isNaN(amount) || amount < 500) {
+                showToast("❌ Minimum deposit is 500 ETB", true);
+                return;
+            }
+            if (amount > 10000) {
+                showToast("❌ Maximum deposit is 10,000 ETB", true);
+                return;
+            }
+            if (!transactionCode) {
+                showToast("❌ Please enter your transaction code (FT... or CBE reference)", true);
+                return;
+            }
+            if (VERIFIER_API_KEY === "YOUR_API_KEY_HERE") {
+                showToast("⚠️ API Key not configured! Please get your API key from verifyapi.leulzenebe.pro", true);
+                return;
+            }
+            
+            // Show loading state
+            depositBtn.disabled = true;
+            depositBtn.innerHTML = '<span class="loading"></span> Verifying payment...';
+            
+            try {
+                const verification = await verifyPayment(transactionCode);
+                
+                if (verification.success) {
+                    // Payment verified - add balance
+                    currentUserBalance += amount;
+                    totalInvestedAmount += amount;
+                    
+                    // Save transaction record
+                    const transaction = {
+                        phone: currentUser.phone,
+                        amount: amount,
+                        transactionCode: transactionCode,
+                        type: 'deposit',
+                        status: 'completed',
+                        screenshot: screenshot || null,
+                        verifiedAmount: verification.amount,
+                        timestamp: new Date().toISOString()
+                    };
+                    paymentRecords.push(transaction);
+                    localStorage.setItem('mcd_payments', JSON.stringify(paymentRecords));
+                    
+                    // Save user data
+                    localStorage.setItem(`mcd_data_${currentUser.phone}`, JSON.stringify({
+                        balance: currentUserBalance,
+                        invested: totalInvestedAmount,
+                        earned: totalEarnedAmount,
+                        orders: totalOrdersCount,
+                        expected: totalExpectedIncome,
+                        vipLevel: currentUserVipLevel
+                    }));
+                    
+                    updateAllBalanceDisplays();
+                    showToast(`✅ Payment verified! ${amount} ETB added to your balance.`);
+                    
+                    // Reset form
+                    document.getElementById('amountInput').value = '500';
+                    document.getElementById('transactionCode').value = '';
+                    document.getElementById('screenshotPreview').src = '';
+                    document.getElementById('screenshotPreview').style.display = 'none';
+                    document.getElementById('screenshotInput').value = '';
+                    
+                    // Go back to home
+                    setTimeout(() => {
+                        hideDepositPage();
+                    }, 2000);
+                } else {
+                    showToast(`❌ Verification failed: ${verification.message}`, true);
+                }
+            } catch (error) {
+                console.error("Deposit error:", error);
+                showToast("❌ An error occurred. Please try again.", true);
+            } finally {
+                depositBtn.disabled = false;
+                depositBtn.innerHTML = '✅ Verify & Deposit';
+            }
+        }
+    </script>
+</body>
+</html>
